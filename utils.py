@@ -1,9 +1,33 @@
-import replicate
 import time
+import os
+from ollama import Client
+
+from dotenv import load_dotenv
+
+REPLICATE_MODEL_ENDPOINT7B = os.environ.get("REPLICATE_MODEL_ENDPOINT7B", default="")
+
+
+def ollama_send(llm, prompt, max_len, temperature, top_p):
+    client = Client(
+        host=REPLICATE_MODEL_ENDPOINT7B, headers={"x-some-header": "some-value"}
+    )
+    response = client.chat(
+        model="llama3.2",
+        messages=[
+            {
+                "role": "user",
+                "content": prompt,
+            },
+        ],
+        stream=True,
+    )
+    return response
+
 
 # Initialize debounce variables
 last_call_time = 0
 debounce_interval = 2  # Set the debounce interval (in seconds) to your desired value
+
 
 def debounce_replicate_run(llm, prompt, max_len, temperature, top_p, API_TOKEN):
     global last_call_time
@@ -20,9 +44,8 @@ def debounce_replicate_run(llm, prompt, max_len, temperature, top_p, API_TOKEN):
         print("Debouncing")
         return "Hello! You are sending requests too fast. Please wait a few seconds before sending another request."
 
-
     # Update the last call time to the current time
     last_call_time = time.time()
-    
-    output = replicate.run(llm, input={"prompt": prompt + "Assistant: ", "max_length": max_len, "temperature": temperature, "top_p": top_p, "repetition_penalty": 1}, api_token=API_TOKEN)
-    return output
+
+    # llm, input={"prompt": prompt + "Assistant: ", "max_length": max_len, "temperature": temperature, "top_p": top_p, "repetition_penalty": 1}, api_token=API_TOKEN
+    # return output
