@@ -15,13 +15,12 @@ a16z-infra
 
 # External libraries:
 import streamlit as st
-import replicate
 from dotenv import load_dotenv
+
 
 load_dotenv()
 import os
-from utils import ollama_send
-from auth0_component import login_button
+from utils import ollama_send, get_models
 
 ###Global variables:###
 REPLICATE_API_TOKEN = os.environ.get("REPLICATE_API_TOKEN", default="")
@@ -73,6 +72,7 @@ def render_app():
     # container for the user's text input
     container = st.container()
     # Set up/Initialize Session State variables:
+    st.session_state["user_info"] = "test"
     if "chat_dialogue" not in st.session_state:
         st.session_state["chat_dialogue"] = []
     if "llm" not in st.session_state:
@@ -90,15 +90,20 @@ def render_app():
         st.session_state["string_dialogue"] = ""
 
     # Dropdown menu to select the model edpoint:
+    response = get_models()
+    model_list = []
+    for model in response.models:
+        model_list.append(model.model)
     selected_option = st.sidebar.selectbox(
-        "Choose a LLaMA2 model:", ["LLaMA2-70B", "LLaMA2-13B", "LLaMA2-7B"], key="model"
+        "Choose a LLM model:", model_list, key="model"
     )
-    if selected_option == "LLaMA2-7B":
-        st.session_state["llm"] = REPLICATE_MODEL_ENDPOINT7B
-    elif selected_option == "LLaMA2-13B":
-        st.session_state["llm"] = REPLICATE_MODEL_ENDPOINT13B
-    else:
-        st.session_state["llm"] = REPLICATE_MODEL_ENDPOINT70B
+    st.session_state["llm"] = selected_option
+    # if selected_option == "LLaMA2-7B":
+    #     st.session_state["llm"] = REPLICATE_MODEL_ENDPOINT7B
+    # elif selected_option == "Gemma2-2B":
+    #     st.session_state["llm"] = "gemma2:2b"
+    # elif selected_option == "Gemma-2B":
+    #     st.session_state["llm"] = "gemma:2b"
     # Model hyper parameters:
     st.session_state["temperature"] = st.sidebar.slider(
         "Temperature:", min_value=0.01, max_value=5.0, value=0.1, step=0.01
@@ -111,7 +116,7 @@ def render_app():
     )
 
     NEW_P = st.sidebar.text_area(
-        "Prompt before the chat starts. Edit here if desired:", PRE_PROMPT, height=60
+        "Prompt before the chat starts. Edit here if desired:", PRE_PROMPT, height=70
     )
     if NEW_P != PRE_PROMPT and NEW_P != "" and NEW_P != None:
         st.session_state["pre_prompt"] = NEW_P + "\n\n"
@@ -129,10 +134,10 @@ def render_app():
     )
 
     # add logout button
-    def logout():
-        del st.session_state["user_info"]
+    # def logout():
+    #     del st.session_state["user_info"]
 
-    logout_button = btn_col2.button("Logout", use_container_width=True, on_click=logout)
+    # logout_button = btn_col2.button("Logout", use_container_width=True, on_click=logout)
 
     # add links to relevant resources for users to select
 
@@ -165,18 +170,21 @@ def render_app():
                         + dict_message["content"]
                         + "\n\n"
                     )
-            print(string_dialogue)
             output = ollama_send(
                 st.session_state["llm"],
                 string_dialogue + "Assistant: ",
                 st.session_state["max_seq_len"],
                 st.session_state["temperature"],
                 st.session_state["top_p"],
+                st.session_state["pre_prompt"],
             )
-            for item in output:
-                full_response += item["message"]["content"]
-                message_placeholder.markdown(full_response + "▌")
-            message_placeholder.markdown(full_response)
+            try:
+                for item in output:
+                    full_response += item["message"]["content"]
+                    message_placeholder.markdown(full_response + "▌")
+                message_placeholder.markdown(full_response)
+            except:
+                pass
         # Add assistant response to chat history
         st.session_state.chat_dialogue.append(
             {"role": "assistant", "content": full_response}

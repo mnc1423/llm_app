@@ -1,26 +1,42 @@
 import time
 import os
-from ollama import Client
+from ollama import Client, Options
+
+from ollama import list
+from ollama import ListResponse
+
+# response: ListResponse = list()
 
 from dotenv import load_dotenv
 
 REPLICATE_MODEL_ENDPOINT7B = os.environ.get("REPLICATE_MODEL_ENDPOINT7B", default="")
+client = Client(
+    host=REPLICATE_MODEL_ENDPOINT7B, headers={"x-some-header": "some-value"}
+)
 
 
-def ollama_send(llm, prompt, max_len, temperature, top_p):
-    client = Client(
-        host=REPLICATE_MODEL_ENDPOINT7B, headers={"x-some-header": "some-value"}
-    )
+def ollama_send(llm, prompt, max_len, temperature, top_p, pre_prompt):
+    options = Options()
+    options.top_p = float(top_p)
+    options.temperature = float(temperature)
+    options.num_ctx = int(max_len)
     response = client.chat(
-        model="llama3.2",
+        model=llm,
         messages=[
+            {"role": "system", "content": pre_prompt},
             {
                 "role": "user",
                 "content": prompt,
             },
         ],
+        options=options,
         stream=True,
     )
+    return response
+
+
+def get_models():
+    response: ListResponse = client.list()
     return response
 
 
