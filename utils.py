@@ -36,7 +36,11 @@ def ollama_send(llm, prompt, max_len, temperature, top_p, pre_prompt):
 
 
 def get_models():
-    response: ListResponse = client.list()
+    try:
+        response: ListResponse = client.list()
+    except:
+        response = client.list()
+
     return response
 
 

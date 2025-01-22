@@ -1,4 +1,3 @@
-version: '3'
 services:
   llama2-chatbot:
     build:
@@ -20,14 +19,16 @@ services:
     networks:
       - elastic 
 
-  ollama:
-    image: ollama/ollama:latest
-    ports:
-      - "11434:11434"
-    volumes:
-      - ./ollama:/root/.ollama/
-    networks:
-      - elastic
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   ports:
+  #     - "11434:11434"
+  #   environment:
+  #     - NVIDIA_VISIBLE_DEVICES=all # Use all available GPUs
+  #   volumes:
+  #     - ./ollama:/root/.ollama/
+  #   networks:
+  #     - elastic
       
 networks:
   elastic:

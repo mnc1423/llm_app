@@ -93,7 +93,10 @@ def render_app():
     response = get_models()
     model_list = []
     for model in response.models:
-        model_list.append(model.model)
+        if "embed" in model.model:
+            continue
+        else:
+            model_list.append(model.model)
     selected_option = st.sidebar.selectbox(
         "Choose a LLM model:", model_list, key="model"
     )
