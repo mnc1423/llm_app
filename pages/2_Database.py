@@ -1,6 +1,7 @@
 import streamlit as st
 import PyPDF2
-from utils import get_models
+from utils import get_models, get_all_collection, get_collection_details
+import pprint
 
 
 def read_pdf(file):
@@ -39,3 +40,13 @@ with db_col:
             continue
     selected_option = st.selectbox("Choose a Embedding model:", model_list, key="model")
     st.session_state["llm"] = selected_option
+    collection_list = get_all_collection()
+    names = [doc["name"] for doc in collection_list]
+    db_option = st.selectbox("Choose a Collection:", names, key="collection")
+    if db_option:
+        details_dict = get_collection_details(db_option, collection_list)
+        pretty_details = pprint.pformat(details_dict)
+
+        # Display using st.text_area() (or st.code() for code block)
+        # st.text_area("Collection Details", pretty_details, height=250)
+        st.code(pretty_details, language="python")  # Alternative: display as code block

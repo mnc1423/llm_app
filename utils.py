@@ -1,7 +1,7 @@
 import time
 import os
 from ollama import Client, Options
-
+import httpx
 from ollama import list
 from ollama import ListResponse
 
@@ -47,6 +47,27 @@ def get_models():
 # Initialize debounce variables
 last_call_time = 0
 debounce_interval = 2  # Set the debounce interval (in seconds) to your desired value
+
+
+CHROMA_HOST = "http://chroma_docker-chroma-api-1:8090"
+
+
+def get_all_collection():
+    uri = "/get_collections"
+    try:
+        with httpx.Client() as client:
+            response = client.get(CHROMA_HOST + uri)
+            return response.json()
+            # return [doc["name"] for doc in data]
+    except Exception as e:
+        return e
+
+
+def get_collection_details(collection_name, collection_list):
+    for doc in collection_list:
+        if doc["name"] == collection_name:
+            return doc  # Return the dictionary
+    return None  # or raise an exception if not found
 
 
 def debounce_replicate_run(llm, prompt, max_len, temperature, top_p, API_TOKEN):
