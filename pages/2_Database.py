@@ -1,5 +1,6 @@
 import streamlit as st
 import PyPDF2
+from utils import get_models
 
 
 def read_pdf(file):
@@ -29,4 +30,12 @@ with upload_col:
         st.subheader("Extracted Text:")
         st.markdown(content)
 with db_col:
-    pass
+    response = get_models()
+    model_list = []
+    for model in response.models:
+        if "embed" in model.model:
+            model_list.append(model.model)
+        else:
+            continue
+    selected_option = st.selectbox("Choose a Embedding model:", model_list, key="model")
+    st.session_state["llm"] = selected_option
