@@ -4,6 +4,7 @@ from ollama import Client, Options
 import httpx
 from ollama import list
 from ollama import ListResponse
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 # response: ListResponse = list()
 
@@ -90,3 +91,14 @@ def debounce_replicate_run(llm, prompt, max_len, temperature, top_p, API_TOKEN):
 
     # llm, input={"prompt": prompt + "Assistant: ", "max_length": max_len, "temperature": temperature, "top_p": top_p, "repetition_penalty": 1}, api_token=API_TOKEN
     # return output
+
+
+def get_RCTS_chunks(text, chunk_size, chunk_overlap):
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size,
+        chunk_overlap=chunk_overlap,
+        length_function=len,
+        is_separator_regex=False,
+    )
+    chunks = text_splitter.split_text(text)
+    return chunks

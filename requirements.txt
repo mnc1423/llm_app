@@ -2,3 +2,4 @@ ollama
 streamlit
 python-dotenv
 PyPDF2
+langchain-text-splitters
