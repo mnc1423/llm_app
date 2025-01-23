@@ -19,7 +19,6 @@ file = st.file_uploader("Upload a PDF file", type="pdf")
 if file is not None:
     # Read PDF and extract text
     content = read_pdf(file)
-
     # Display the content
     st.subheader("Extracted Text:")
-    st.text(content)
+    st.markdown(content)
