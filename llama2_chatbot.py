@@ -1,19 +1,3 @@
-"""
-LLaMA 2 Chatbot app
-======================
-
-This is a Streamlit chatbot app with LLaMA2 that includes session chat history and an option to select multiple LLM
-API endpoints on Replicate. The 7B and 13B models run on Replicate on one A100 40Gb. The 70B runs in one A100 80Gb. The weights have been tensorized.
-
-Author: Marco Mascorro (@mascobot.com)
-Created: July 2023
-Version: 0.9.0 (Experimental)
-Status: Development
-Python version: 3.9.15
-a16z-infra
-"""
-
-# External libraries:
 import streamlit as st
 from dotenv import load_dotenv
 
@@ -21,22 +5,6 @@ from dotenv import load_dotenv
 load_dotenv()
 import os
 from utils import ollama_send, get_models
-
-###Global variables:###
-REPLICATE_API_TOKEN = os.environ.get("REPLICATE_API_TOKEN", default="")
-# Your your (Replicate) models' endpoints:
-REPLICATE_MODEL_ENDPOINT7B = os.environ.get("REPLICATE_MODEL_ENDPOINT7B", default="")
-REPLICATE_MODEL_ENDPOINT13B = os.environ.get("REPLICATE_MODEL_ENDPOINT13B", default="")
-REPLICATE_MODEL_ENDPOINT70B = os.environ.get("REPLICATE_MODEL_ENDPOINT70B", default="")
-PRE_PROMPT = "You are a helpful assistant. You do not respond as 'User' or pretend to be 'User'. You only respond once as Assistant."
-# Auth0 for auth
-AUTH0_CLIENTID = os.environ.get("AUTH0_CLIENTID", default="")
-AUTH0_DOMAIN = os.environ.get("AUTH0_DOMAIN", default="")
-
-# if not (REPLICATE_API_TOKEN and REPLICATE_MODEL_ENDPOINT13B and REPLICATE_MODEL_ENDPOINT7B and
-#         AUTH0_CLIENTID and AUTH0_DOMAIN):
-#     st.warning("Add a `.env` file to your app directory with the keys specified in `.env_template` to continue.")
-#     st.stop()
 
 ###Initial UI configuration:###
 st.set_page_config(

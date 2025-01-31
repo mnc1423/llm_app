@@ -18,8 +18,9 @@ def read_pdf(file):
     return content
 
 
-st.title("Database")
+st.set_page_config(page_title="Database", layout="wide")
 
+st.title("Database")
 upload_col, db_col = st.columns([2, 1])
 
 
@@ -46,7 +47,7 @@ with upload_col:
         chunks = get_RCTS_chunks(content, chunk_size, chunk_overlap)
         st.write(
             "Text Chunks:",
-            chunks[:10],
+            chunks[:num_chunks],
             unsafe_allow_html=True,
         )
 with db_col:
