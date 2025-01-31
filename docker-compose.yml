@@ -3,7 +3,7 @@ services:
     build:
       context: .
     env_file: .env
-    command: streamlit run --server.port 8501 --server.address 0.0.0.0 llama2_chatbot.py
+    command: streamlit run --server.port 8501 --server.address 0.0.0.0 Default_Chat.py
     # command: tail -f /dev/null 
     container_name: llama2-chatbot
     volumes:
