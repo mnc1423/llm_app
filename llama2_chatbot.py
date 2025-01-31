@@ -11,6 +11,9 @@ st.set_page_config(
     page_title="LLaMA2 Chatbot by a16z-infra", page_icon="🦙", layout="wide"
 )
 
+PRE_PROMPT = ""
+OLLAMA_ENDPOINT = os.environ.get("OLLAMA_ENDPOINT", default="")
+
 
 def render_app():
 
@@ -45,7 +48,7 @@ def render_app():
         st.session_state["chat_dialogue"] = []
     if "llm" not in st.session_state:
         # st.session_state['llm'] = REPLICATE_MODEL_ENDPOINT13B
-        st.session_state["llm"] = REPLICATE_MODEL_ENDPOINT70B
+        st.session_state["llm"] = OLLAMA_ENDPOINT
     if "temperature" not in st.session_state:
         st.session_state["temperature"] = 0.1
     if "top_p" not in st.session_state:

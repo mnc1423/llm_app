@@ -10,7 +10,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from dotenv import load_dotenv
 
-REPLICATE_MODEL_ENDPOINT7B = os.environ.get("REPLICATE_MODEL_ENDPOINT7B", default="")
+REPLICATE_MODEL_ENDPOINT7B = os.environ.get("OLLAMA_ENDPOINT", default="")
 client = Client(
     host=REPLICATE_MODEL_ENDPOINT7B, headers={"x-some-header": "some-value"}
 )
