@@ -72,13 +72,6 @@ def render_app():
         "Choose a LLM model:", model_list, key="model"
     )
     st.session_state["llm"] = selected_option
-    # if selected_option == "LLaMA2-7B":
-    #     st.session_state["llm"] = REPLICATE_MODEL_ENDPOINT7B
-    # elif selected_option == "Gemma2-2B":
-    #     st.session_state["llm"] = "gemma2:2b"
-    # elif selected_option == "Gemma-2B":
-    #     st.session_state["llm"] = "gemma:2b"
-    # Model hyper parameters:
     st.session_state["temperature"] = st.sidebar.slider(
         "Temperature:", min_value=0.01, max_value=5.0, value=0.1, step=0.01
     )

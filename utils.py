@@ -5,6 +5,8 @@ import httpx
 from ollama import list
 from ollama import ListResponse
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from PIL import Image
+import io
 
 # response: ListResponse = list()
 
@@ -14,6 +16,28 @@ REPLICATE_MODEL_ENDPOINT7B = os.environ.get("OLLAMA_ENDPOINT", default="")
 client = Client(
     host=REPLICATE_MODEL_ENDPOINT7B, headers={"x-some-header": "some-value"}
 )
+
+
+def get_image_bytes(image_file):
+    image_path = image_file
+    image = Image.open(image_path)
+
+    with io.BytesIO() as output:
+        image.save(output, format="png")
+        image_bytes = output.getvalue()
+
+    return image_bytes
+
+
+def analyze_image_file(image_file, model, user_prompt):
+    # gets image bytes using helper function
+    image_bytes = get_image_bytes(image_file)
+
+    stream = client.generate(
+        model=model, prompt=user_prompt, images=[image_bytes], stream=True
+    )
+
+    return stream
 
 
 def ollama_send(llm, prompt, max_len, temperature, top_p, pre_prompt):
