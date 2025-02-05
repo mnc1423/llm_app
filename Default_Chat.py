@@ -7,9 +7,7 @@ import os
 from utils import ollama_send, get_models
 
 ###Initial UI configuration:###
-st.set_page_config(
-    page_title="LLaMA2 Chatbot by a16z-infra", page_icon="🦙", layout="wide"
-)
+st.set_page_config(page_title="LLM Chat App", page_icon="🦙", layout="wide")
 
 PRE_PROMPT = ""
 OLLAMA_ENDPOINT = os.environ.get("OLLAMA_ENDPOINT", default="")

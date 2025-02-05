@@ -25,6 +25,12 @@ git clone https://github.com/mnc1423/llm_app.git
 ```
 ollama pull deepseek-r1
 ```
+- Setup .env
+```
+OLLAMA_ENDPOINT=
+STREAMLIT_SERVER_RUN_ON_SAVE=
+CHROMA_HOST=
+```
 
 - Run App
 ```

@@ -12,10 +12,9 @@ import io
 
 from dotenv import load_dotenv
 
-REPLICATE_MODEL_ENDPOINT7B = os.environ.get("OLLAMA_ENDPOINT", default="")
-client = Client(
-    host=REPLICATE_MODEL_ENDPOINT7B, headers={"x-some-header": "some-value"}
-)
+ollama_endpoint = os.environ.get("OLLAMA_ENDPOINT", default="")
+chroma_endpoint = os.environ.get("CHROMA_HOST", default="")
+client = Client(host=ollama_endpoint, headers={"x-some-header": "some-value"})
 
 
 def get_image_bytes(image_file):
@@ -74,14 +73,11 @@ last_call_time = 0
 debounce_interval = 2  # Set the debounce interval (in seconds) to your desired value
 
 
-CHROMA_HOST = "http://chroma_docker-chroma-api-1:8090"
-
-
 def get_all_collection():
     uri = "/get_collections"
     try:
         with httpx.Client() as client:
-            response = client.get(CHROMA_HOST + uri)
+            response = client.get(chroma_endpoint + uri)
             return response.json()
             # return [doc["name"] for doc in data]
     except Exception as e:
