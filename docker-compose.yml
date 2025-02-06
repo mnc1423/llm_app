@@ -16,8 +16,6 @@ services:
         limits:
           memory: 2G
 
-    networks:
-      - elastic 
 
   # ollama:
   #   image: ollama/ollama:latest
@@ -27,9 +25,3 @@ services:
   #     - NVIDIA_VISIBLE_DEVICES=all # Use all available GPUs
   #   volumes:
   #     - ./ollama:/root/.ollama/
-  #   networks:
-  #     - elastic
-      
-networks:
-  elastic:
-    external: true
