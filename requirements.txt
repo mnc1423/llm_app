@@ -3,3 +3,4 @@ streamlit
 python-dotenv
 PyPDF2
 langchain-text-splitters
+vertexai==1.70.0

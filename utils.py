@@ -39,6 +39,12 @@ def analyze_image_file(image_file, model, user_prompt):
     return stream
 
 
+def pdf_to_bytes(_file):
+    with open(_file, "rb") as pdf_file:
+        pdf_data = pdf_file.read()
+    return pdf_data
+
+
 def ollama_send(llm, prompt, max_len, temperature, top_p, pre_prompt):
     options = Options()
     options.top_p = float(top_p)
