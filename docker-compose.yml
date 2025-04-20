@@ -10,6 +10,10 @@ services:
       - ./:/app
     ports:
       - "8501:8501"
+    # networks:
+    #   - local_network
+    network_mode: "host" # linux setup (security warning)
+
 
     deploy:
       resources:
@@ -17,13 +21,17 @@ services:
           memory: 2G
 
 
-  # ollama:
-  #   image: ollama/ollama:latest
-  #   ports:
-  #     - "11434:11434"
-  #   environment:
-  #     - NVIDIA_VISIBLE_DEVICES=all # Use all available GPUs
-  #   volumes:
-  #     - ./ollama:/root/.ollama/
-  #   networks:
-  #     - elastic
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all # Use all available GPUs
+    volumes:
+      - ./ollama:/root/.ollama/
+    networks:
+      - elastic
+      
+networks:
+  elastic:
+    external: true

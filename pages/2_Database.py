@@ -40,6 +40,7 @@ with upload_col:
     if file is not None:
         # Read PDF and extract text
         content = read_pdf(file)
+        print(type(content))
         # Display the content
         st.container()
         st.subheader("Extracted Text:")
