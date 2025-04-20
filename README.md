@@ -62,6 +62,8 @@ ollama create <ollama Model> -f Modelfile
 ```
 
 ## TODO
-- Add endpoints for Non open Models (OpenAI, Gemini, etc)
-- Hungging Face model integration 
-- Vectorize data other than PDF
+- [ ] Add endpoints for Non open Models (OpenAI, Gemini, etc)
+- [ ] Hungging Face model integration 
+- [ ] Vectorize data other than PDF
+- [ ] MCP Addons
+- [ ] Agent2Agent

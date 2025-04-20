@@ -3,3 +3,5 @@ streamlit
 python-dotenv
 PyPDF2
 langchain-text-splitters
+google-api-python-client==2.161.0
+google-genai
