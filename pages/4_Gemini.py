@@ -1,5 +1,5 @@
 from google.oauth2 import service_account
-from google_modules.vertexAI import VertexAI
+from google_modules.vertexAI import GeminiClient
 import streamlit as st
 
 # credentials = service_account.Credentials.from_service_account_file()
@@ -10,7 +10,7 @@ st.set_page_config(page_title="Gemini", layout="wide")
 st.title("Gemini")
 chat_col, model_col = st.columns([2, 1])
 
-gemini = VertexAI()
+gemini = GeminiClient()
 
 st.sidebar.header("Chat Options")
 
@@ -20,6 +20,10 @@ gemini_list = gemini.get_gemini_models()
 selected_option = st.sidebar.selectbox(
     "Choose a Gemini model:", gemini_list, key="model"
 )
+st.sidebar.slider(
+    "History Count:", min_value=0, max_value=30, value=1, step=1, key="history_count"
+)
+
 message_placeholder = st.empty()
 if "string_dialogue" not in st.session_state:
     st.session_state["string_dialogue"] = ""
@@ -34,7 +38,6 @@ response_container = st.container()
 for message in st.session_state.chat_dialogue:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-
 
 if prompt := st.chat_input("Type your question here to talk to Gemini"):
 
@@ -57,15 +60,19 @@ if prompt := st.chat_input("Type your question here to talk to Gemini"):
                 string_dialogue = (
                     string_dialogue + "Assistant: " + dict_message["content"] + "\n\n"
                 )
-        output = gemini.generate_streaming(
-            model=gemini_list[gemini_model], content=prompt
-        )
-        try:
-            for item in output:
-                full_response += item.text
-                message_placeholder.markdown(full_response + "▌")
-            message_placeholder.markdown(full_response)
-        except:
-
-            pass
+        if st.session_state["history_count"] <= 0:
+            output = gemini.generate_streaming(model=gemini_list[gemini_model])
+        else:
+            history_list = st.session_state["chat_dialogue"][
+                : st.session_state["history_count"]
+            ]
+            content_list = gemini.create_content_list(history_list=history_list)
+            output = gemini.generate_streaming(model=gemini_list[gemini_model])
+        # try:
+        for item in output:
+            full_response += item.text
+            message_placeholder.markdown(full_response + "▌")
+        message_placeholder.markdown(full_response)
+        # except:
+        #     pass
     st.session_state.chat_dialogue.append({"role": "model", "content": full_response})

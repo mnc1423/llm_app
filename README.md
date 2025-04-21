@@ -12,6 +12,14 @@
 - Intergration with Ollama
 - Use Open Models on Local Environment
 
+
+## TODO
+- [ ] Add endpoints for Non open Models (OpenAI, Gemini, etc)
+- [ ] Hungging Face model integration 
+- [ ] Vectorize data other than PDF
+- [ ] MCP Addons
+- [ ] Agent2Agent
+
 ## Installation
 
 - Clone the repository
@@ -65,9 +73,3 @@ ollama create <ollama Model> -f Modelfile
 - Add Key to .env 
 
 
-## TODO
-- [ ] Add endpoints for Non open Models (OpenAI, Gemini, etc)
-- [ ] Hungging Face model integration 
-- [ ] Vectorize data other than PDF
-- [ ] MCP Addons
-- [ ] Agent2Agent
