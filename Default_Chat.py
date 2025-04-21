@@ -26,7 +26,6 @@ def render_app():
 
     # Left sidebar menu
     st.sidebar.header("Chat Options")
-
     # Set config for a cleaner menu, footer & background:
     hide_streamlit_style = """
                 <style>
@@ -98,13 +97,8 @@ def render_app():
         "Clear History", use_container_width=True, on_click=clear_history
     )
 
-    # add logout button
-    # def logout():
-    #     del st.session_state["user_info"]
-
-    # logout_button = btn_col2.button("Logout", use_container_width=True, on_click=logout)
-
-    # add links to relevant resources for users to select
+    st.sidebar.header("Tools")
+    tool_option = st.sidebar.multiselect("Choose Tool:", model_list, key="tools")
 
     # Display chat messages from history on app rerun
     for message in st.session_state.chat_dialogue:
