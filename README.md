@@ -60,6 +60,10 @@ python llama.cpp/convert_hf_to_gguf.py <repo_path> --outfile <model>.gguf --outt
 echo "FROM <created Model>" > Modelfile
 ollama create <ollama Model> -f Modelfile
 ```
+## Using Gemini
+- Get API Key from Google AI Studio [link](aistudio.google.com)
+- Add Key to .env 
+
 
 ## TODO
 - [ ] Add endpoints for Non open Models (OpenAI, Gemini, etc)
