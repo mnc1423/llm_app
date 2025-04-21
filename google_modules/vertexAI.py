@@ -3,7 +3,7 @@ from google.genai import types
 from dotenv import load_dotenv
 import os
 
-API_KEY = os.environ.get("API_KEY", default="")
+API_KEY = os.environ.get("GOOGLE_API_KEY", default="")
 
 
 class VertexAI:
