@@ -1,7 +1,8 @@
-FROM python:3.11.10-alpine3.20
+FROM python:3.11-slim
 
 WORKDIR /app
-COPY . /app
-RUN pip install -r requirements.txt
-EXPOSE 80
-CMD ["streamlit", "run", "--server.port", "8501", "--server.address", "0.0.0.0", "llama2_chatbot.py"]
+COPY requirements.txt .
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+COPY . .
+EXPOSE 8501
+CMD ["streamlit", "run", "--server.port=8501", "--server.address=0.0.0.0", "llama2_chatbot.py"]

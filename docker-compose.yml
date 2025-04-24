@@ -12,7 +12,6 @@ services:
       - "8501:8501"
     # networks:
     #   - local_network
-    network_mode: "host" # linux setup (security warning)
 
 
     deploy:
