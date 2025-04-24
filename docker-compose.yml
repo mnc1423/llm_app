@@ -1,24 +1,20 @@
 services:
   llama2-chatbot:
     build:
-      context: .
+      context: .            
     env_file: .env
-    command: streamlit run --server.port 8501 --server.address 0.0.0.0 Default_Chat.py
-    # command: tail -f /dev/null 
+    command: streamlit run main.py --server.port=8501 --server.address=0.0.0.0
     container_name: llama2-chatbot
     volumes:
-      - ./:/app
+      - ./app:/app          
     ports:
       - "8501:8501"
-    # networks:
-    #   - local_network
-
-
+    networks:
+      - elastic
     deploy:
       resources:
         limits:
           memory: 2G
-
 
   # ollama:
   #   image: ollama/ollama:latest
