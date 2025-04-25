@@ -6,3 +6,4 @@ langchain-text-splitters
 google-api-python-client==2.161.0
 google-genai
 vertexai==1.70.0
+pydantic-settings
