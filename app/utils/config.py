@@ -31,8 +31,8 @@ class _GoogleSettings(BaseSettings):
 
 
 class AppSettings(BaseSettings):
-    ollama = _OllamaSettings = _OllamaSettings()
-    google = _google = _GoogleSettings()
+    ollama: _OllamaSettings = _OllamaSettings()
+    google: _GoogleSettings = _GoogleSettings()
 
 
 app_settings = AppSettings()
