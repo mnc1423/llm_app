@@ -1,6 +1,7 @@
 from google.oauth2 import service_account
-from google_modules.vertexAI import GeminiClient
+from llm_modules.vertex_ai import GeminiClient
 import streamlit as st
+from utils.config import app_settings
 
 # credentials = service_account.Credentials.from_service_account_file()
 

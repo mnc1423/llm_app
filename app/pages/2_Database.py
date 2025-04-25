@@ -1,6 +1,6 @@
 import streamlit as st
 import PyPDF2
-from utils import (
+from utils.utils import (
     get_models,
     get_all_collection,
     get_collection_details,

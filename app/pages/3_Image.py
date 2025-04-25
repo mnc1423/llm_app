@@ -2,7 +2,7 @@ import streamlit as st
 import io
 import tempfile
 from PIL import Image
-from utils import get_models, analyze_image_file
+from utils.utils import get_models, analyze_image_file
 
 st.set_page_config(page_title="Image", layout="wide")
 

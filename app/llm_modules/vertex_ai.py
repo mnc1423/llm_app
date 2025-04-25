@@ -2,10 +2,7 @@ from google import genai
 from google.genai import types
 from dotenv import load_dotenv
 import os
-
-API_KEY = os.environ.get("GOOGLE_API_KEY", default="")
-PROJECT = os.environ.get("project", default="")
-LOCATION = os.environ.get("location", default="")
+from utils.config import app_settings
 
 
 class GeminiClient:
@@ -13,11 +10,11 @@ class GeminiClient:
         if vertexAI:
             self.client = genai.Client(
                 vertexai=True,
-                project="",
-                location="",
+                project=app_settings.google.project,
+                location=app_settings.google.location,
             )
         else:
-            self.client = genai.Client(api_key=API_KEY)
+            self.client = genai.Client(api_key=app_settings.google.api_key)
         self.content_loader = ContentLoader()
         self.contents = []  # contents
 

@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 import os
-from utils import ollama_send, get_models
+from utils.utils import ollama_send, get_models
 
 ###Initial UI configuration:###
 st.set_page_config(page_title="LLM Chat App", page_icon="🦙", layout="wide")
