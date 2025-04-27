@@ -64,8 +64,9 @@ if prompt := st.chat_input("Type your question here to talk to Gemini"):
         if st.session_state["history_count"] <= 0:
             output = gemini.generate_streaming(model=gemini_list[gemini_model])
         else:
+            # append the latest history
             history_list = st.session_state["chat_dialogue"][
-                : st.session_state["history_count"]
+                -st.session_state["history_count"] :
             ]
             content_list = gemini.create_content_list(history_list=history_list)
             output = gemini.generate_streaming(model=gemini_list[gemini_model])
