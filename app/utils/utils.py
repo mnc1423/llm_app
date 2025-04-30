@@ -7,6 +7,7 @@ from ollama import ListResponse
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from PIL import Image
 import io
+from .api_handler import _Request
 
 # response: ListResponse = list()
 
@@ -79,15 +80,23 @@ last_call_time = 0
 debounce_interval = 2  # Set the debounce interval (in seconds) to your desired value
 
 
-def get_all_collection():
+async def get_all_collection(vectordb):
     uri = "/get_collections"
-    try:
-        with httpx.Client() as client:
-            response = client.get(chroma_endpoint + uri)
-            return response.json()
-            # return [doc["name"] for doc in data]
-    except Exception as e:
-        return e
+    if vectordb == "ChromaDB":
+        try:
+            with httpx.Client() as client:
+                response = client.get(chroma_endpoint + uri)
+                return response.json()
+                # return [doc["name"] for doc in data]
+        except Exception as e:
+            return e
+
+
+async def get_elastic_indices():
+    uri = "/get_collections"
+    async with _Request() as req:
+        indices = await req.get(endpoint="http://elastic_api:8000/insert" + uri)
+        return indices
 
 
 def get_collection_details(collection_name, collection_list):
