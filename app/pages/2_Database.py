@@ -3,9 +3,11 @@ import PyPDF2
 from utils.utils import (
     get_models,
     get_all_collection,
+    get_elastic_indices,
     get_collection_details,
     get_RCTS_chunks,
 )
+import asyncio
 import pprint
 
 
@@ -40,28 +42,64 @@ with upload_col:
     if file is not None:
         # Read PDF and extract text
         content = read_pdf(file)
-        print(type(content))
         # Display the content
         st.container()
-        st.subheader("Extracted Text:")
         # st.markdown(content)
         chunks = get_RCTS_chunks(content, chunk_size, chunk_overlap)
+        st.subheader("Extracted Text:")
         st.write(
-            "Text Chunks:",
+            f"Total Text Chunks:{len(chunks)}",
             chunks[:num_chunks],
             unsafe_allow_html=True,
         )
+        if st.button("Upload chunks to selected index"):
+            progress_bar = st.progress(0)
+            status = st.empty()
+
+        # from utils.utils import (
+        #     get_embedding_function,
+        #     upload_chunk_to_es,
+        # )  # you implement these
+
+        # embed_model = st.session_state["embedding_model"]
+        # index_name = st.session_state["collection"]
+
+        # embedding_fn = get_embedding_function(embed_model)  # returns a callable
+        # total_chunks = len(chunks)
+
+        # for i, chunk in enumerate(chunks):
+        #     embedding = embedding_fn(chunk)
+
+        #     doc = {
+        #         "text": chunk,
+        #         "embedding": embedding,
+        #         "chunk_id": i,
+        #         "source": file.name,
+        #     }
+
+        #     # upload_chunk_to_es(index=index_name, doc=doc)
+
+        #     progress = (i + 1) / total_chunks
+        #     progress_bar.progress(progress)
+        #     status.text(f"Uploaded chunk {i + 1}/{total_chunks}")
+
+        # status.success(f"All {total_chunks} chunks uploaded to '{index_name}'!")
+
 with db_col:
     response = get_models()
-    model_list = []
-    for model in response.models:
-        if "embed" in model.model:
-            model_list.append(model.model)
-        else:
-            continue
+    model_list = [model.model for model in response.models if "embed" in model.model]
+
+    vector_db = st.selectbox(
+        "VectorDB",
+        ["Elasticsearch", "ChromaDB"],
+        key="vectordb",
+    )
     selected_option = st.selectbox("Choose a Embedding model:", model_list, key="model")
-    st.session_state["llm"] = selected_option
-    collection_list = get_all_collection()
+    st.session_state["embedding_model"] = selected_option
+    if st.session_state["vectordb"] == "Elasticsearch":
+        collection_list = asyncio.run(get_elastic_indices())
+    else:
+        pass
     try:
         names = [doc["name"] for doc in collection_list]
     except:
@@ -80,6 +118,4 @@ with db_col:
                 """,
             unsafe_allow_html=True,
         )
-        # Display using st.text_area() (or st.code() for code block)
-        # st.text_area("Collection Details", pretty_details, height=250)
         st.code(pretty_details, language="python")  # Alternative: display as code block
