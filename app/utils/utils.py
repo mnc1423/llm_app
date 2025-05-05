@@ -4,6 +4,7 @@ from ollama import Client, Options
 import httpx
 from ollama import list
 from ollama import ListResponse
+import ollama
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from PIL import Image
 import io
@@ -137,3 +138,20 @@ def get_RCTS_chunks(text, chunk_size, chunk_overlap):
     )
     chunks = text_splitter.split_text(text)
     return chunks
+
+
+def ollama_embedding(model_name, text):
+    vectors = ollama.embeddings(
+        model=model_name,
+        prompt=text,
+    )
+    return vectors
+
+
+def upload_chunk_to_es():
+    pass
+
+
+if __name__ == "__main__":
+    resp = ollama_embedding(model_name="nomic-embed-text", text="testing model")
+    print(resp.embedding)
