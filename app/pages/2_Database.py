@@ -10,6 +10,11 @@ from utils.utils import (
 import asyncio
 import pprint
 
+from utils.utils import (
+    ollama_embedding,
+    upload_chunk_to_es,
+)
+
 
 def read_pdf(file):
     pdf_reader = PyPDF2.PdfReader(file)
@@ -56,34 +61,30 @@ with upload_col:
             progress_bar = st.progress(0)
             status = st.empty()
 
-        # from utils.utils import (
-        #     get_embedding_function,
-        #     upload_chunk_to_es,
-        # )  # you implement these
+        embed_model = st.session_state["embedding_model"]
+        index_name = st.session_state["collection"]
 
-        # embed_model = st.session_state["embedding_model"]
-        # index_name = st.session_state["collection"]
+        embedding_fn = lambda text: ollama_embedding(embed_model, text)
 
-        # embedding_fn = get_embedding_function(embed_model)  # returns a callable
-        # total_chunks = len(chunks)
+        total_chunks = len(chunks)
 
-        # for i, chunk in enumerate(chunks):
-        #     embedding = embedding_fn(chunk)
+        for i, chunk in enumerate(chunks):
+            embedding = embedding_fn(chunk)
 
-        #     doc = {
-        #         "text": chunk,
-        #         "embedding": embedding,
-        #         "chunk_id": i,
-        #         "source": file.name,
-        #     }
+            doc = {
+                "text": chunk,
+                "embedding": embedding,
+                "chunk_id": i,
+                "source": file.name,
+            }
 
-        #     # upload_chunk_to_es(index=index_name, doc=doc)
+        upload_chunk_to_es(index=index_name, doc=doc)
 
-        #     progress = (i + 1) / total_chunks
-        #     progress_bar.progress(progress)
-        #     status.text(f"Uploaded chunk {i + 1}/{total_chunks}")
+        progress = (i + 1) / total_chunks
+        progress_bar.progress(progress)
+        status.text(f"Uploaded chunk {i + 1}/{total_chunks}")
 
-        # status.success(f"All {total_chunks} chunks uploaded to '{index_name}'!")
+        status.success(f"All {total_chunks} chunks uploaded to '{index_name}'!")
 
 with db_col:
     response = get_models()
@@ -98,7 +99,7 @@ with db_col:
     st.session_state["embedding_model"] = selected_option
     if st.session_state["vectordb"] == "Elasticsearch":
         collection_list = asyncio.run(get_elastic_indices())
-    else:
+    else:  # for other Vector DBs
         pass
     try:
         names = [doc["name"] for doc in collection_list]

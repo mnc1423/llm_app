@@ -78,7 +78,7 @@ def get_models():
 
 # Initialize debounce variables
 last_call_time = 0
-debounce_interval = 2  # Set the debounce interval (in seconds) to your desired value
+debounce_interval = 2
 
 
 async def get_all_collection(vectordb):
@@ -145,11 +145,14 @@ def ollama_embedding(model_name, text):
         model=model_name,
         prompt=text,
     )
-    return vectors
+    return vectors.embedding
 
 
-def upload_chunk_to_es():
-    pass
+async def upload_chunk_to_es(data: list):
+    uri = "/data"
+    async with _Request() as req:
+        indices = await req.post(endpoint="http://elastic_api:8000/insert" + uri)
+        return indices
 
 
 if __name__ == "__main__":
