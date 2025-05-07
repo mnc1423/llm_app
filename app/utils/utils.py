@@ -14,7 +14,7 @@ from .api_handler import _Request
 
 from dotenv import load_dotenv
 
-ollama_endpoint = os.environ.get("OLLAMA_ENDPOINT", default="")
+ollama_endpoint = os.environ.get("OLLAMA_ENDPOINT", default="http://localhost:11434")
 chroma_endpoint = os.environ.get("CHROMA_HOST", default="")
 client = Client(host=ollama_endpoint, headers={"x-some-header": "some-value"})
 
@@ -141,7 +141,7 @@ def get_RCTS_chunks(text, chunk_size, chunk_overlap):
 
 
 def ollama_embedding(model_name, text):
-    vectors = ollama.embeddings(
+    vectors = client.embeddings(
         model=model_name,
         prompt=text,
     )
@@ -151,7 +151,9 @@ def ollama_embedding(model_name, text):
 async def upload_chunk_to_es(data: list):
     uri = "/data"
     async with _Request() as req:
-        indices = await req.post(endpoint="http://elastic_api:8000/insert" + uri)
+        indices = await req.post(
+            endpoint="http://elastic_api:8000/insert" + uri, json=data
+        )
         return indices
 
 

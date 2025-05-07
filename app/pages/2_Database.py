@@ -31,6 +31,14 @@ st.title("Database")
 upload_col, db_col = st.columns([2, 1])
 
 
+# SET Page Config
+if "embedding_model" not in st.session_state:
+    st.session_state["embedding_model"] = ""
+# if "collection" not in st.session_state:
+#     st.session_state["collection"] = ""
+# if "vectordb" not in st.session_state:
+#     st.session_state["vectordb"] = ""
+
 with upload_col:
     # File upload
     st.container()
@@ -61,30 +69,31 @@ with upload_col:
             progress_bar = st.progress(0)
             status = st.empty()
 
-        embed_model = st.session_state["embedding_model"]
-        index_name = st.session_state["collection"]
+            embed_model = st.session_state["embedding_model"]
+            index_name = st.session_state["collection"]
 
-        embedding_fn = lambda text: ollama_embedding(embed_model, text)
+            embedding_fn = lambda text: ollama_embedding(embed_model, text)
 
-        total_chunks = len(chunks)
+            total_chunks = len(chunks)
 
-        for i, chunk in enumerate(chunks):
-            embedding = embedding_fn(chunk)
+            for i, chunk in enumerate(chunks):
+                embedding = embedding_fn(chunk)
+                payload = {}
+                payload["index"] = index_name
+                doc = {
+                    "text": chunk,
+                    "embedding": embedding,
+                    "source": file.name,
+                }
+                payload["doc"] = doc
+                payload["id"] = i
+                asyncio.run(upload_chunk_to_es(data=payload))
 
-            doc = {
-                "text": chunk,
-                "embedding": embedding,
-                "chunk_id": i,
-                "source": file.name,
-            }
+                progress = (i + 1) / total_chunks
+                progress_bar.progress(progress)
+                status.text(f"Uploaded chunk {i + 1}/{total_chunks}")
 
-        upload_chunk_to_es(index=index_name, doc=doc)
-
-        progress = (i + 1) / total_chunks
-        progress_bar.progress(progress)
-        status.text(f"Uploaded chunk {i + 1}/{total_chunks}")
-
-        status.success(f"All {total_chunks} chunks uploaded to '{index_name}'!")
+                status.success(f"All {total_chunks} chunks uploaded to '{index_name}'!")
 
 with db_col:
     response = get_models()
