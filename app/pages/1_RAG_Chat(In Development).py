@@ -1,30 +1,28 @@
 import streamlit as st
 import time
 import numpy as np
+from utils.utils import get_models, get_elastic_indices, ollama_embedding
+import asyncio
 
-st.set_page_config(page_title="Plotting Demo", page_icon="📈", layout="wide")
-st.container()
-st.markdown("# Plotting Demo")
-st.sidebar.header("Plotting Demo")
-st.write(
-    """This demo illustrates a combination of plotting and animation with
-Streamlit. We're generating a bunch of random numbers in a loop for around
-5 seconds. Enjoy!"""
+st.set_page_config(page_title="RAG Chat", layout="wide")
+chat_col, doc_col = st.columns([2, 1])
+
+# init
+if "embedding_model" not in st.session_state:
+    st.session_state["embedding_model"] = None
+
+# side bar config
+st.sidebar.selectbox("Vector DB", ["Elasticsearch", "ChromaDB"], key="vectordb")
+response = get_models()
+model_list = [model.model for model in response.models if "embed" in model.model]
+selected_option = st.sidebar.selectbox(
+    "Choose a Embedding model:", model_list, key="model"
 )
+if st.session_state["vectordb"] == "Elasticsearch":
+    collection_list = asyncio.run(get_elastic_indices())
+names = [doc["name"] for doc in collection_list]
 
-progress_bar = st.sidebar.progress(0)
-status_text = st.sidebar.empty()
-last_rows = np.random.randn(1, 1)
-chart = st.line_chart(last_rows)
-
-for i in range(1, 101):
-    new_rows = last_rows[-1, :] + np.random.randn(5, 1).cumsum(axis=0)
-    status_text.text("%i%% Complete" % i)
-    chart.add_rows(new_rows)
-    progress_bar.progress(i)
-    last_rows = new_rows
-    time.sleep(0.05)
-
-progress_bar.empty()
-
-st.button("Re-run")
+db_options = st.sidebar.selectbox("Choose a Collection", names, key="collections")
+# create Chat
+# with chat_col:
+st.container()
