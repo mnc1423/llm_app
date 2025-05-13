@@ -44,7 +44,7 @@ with upload_col:
     st.container()
     file = st.file_uploader("Upload a PDF file", type="pdf")
     chunk_size = st.sidebar.slider(
-        "Select chunk size", min_value=50, max_value=1000, value=100, step=50
+        "Select chunk size", min_value=50, max_value=1000, value=300, step=50
     )
     chunk_overlap = st.sidebar.slider(
         "Select chunk overlap", min_value=0, max_value=100, value=20, step=10
