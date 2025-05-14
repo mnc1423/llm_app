@@ -1,8 +1,20 @@
 import streamlit as st
 import time
 import numpy as np
-from utils.utils import get_models, get_elastic_indices, ollama_embedding
+from utils.utils import (
+    get_models,
+    get_elastic_indices,
+    ollama_embedding,
+    init_session_state,
+)
 import asyncio
+
+rag_default = {
+    "embedding_model": "",
+    "chat_dialogue": [],
+    "string_dialogue": "",
+    "model": "",
+}
 
 st.set_page_config(page_title="RAG Chat", layout="wide")
 chat_col, doc_col = st.columns([2, 1])
@@ -24,5 +36,9 @@ names = [doc["name"] for doc in collection_list]
 
 db_options = st.sidebar.selectbox("Choose a Collection", names, key="collections")
 # create Chat
-# with chat_col:
-st.container()
+with doc_col:
+    st.container()
+
+
+with chat_col:
+    st.container()
