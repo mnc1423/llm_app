@@ -9,6 +9,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from PIL import Image
 import io
 from .api_handler import _Request
+import streamlit as st
 
 # response: ListResponse = list()
 
@@ -152,6 +153,12 @@ async def upload_chunk_to_es(data: list):
             endpoint="http://elastic_api:8000/insert" + uri, json=data
         )
         return indices
+
+
+def init_session_state(defaults: dict):
+    for key, value in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = value
 
 
 if __name__ == "__main__":
