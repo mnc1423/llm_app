@@ -36,7 +36,7 @@ names = [doc["name"] for doc in collection_list]
 
 
 db_options = st.sidebar.selectbox("Choose a Collection", names, key="collections")
-
+st.session_state["chat_dialogue"] = []
 st.session_state["k_docs"] = st.sidebar.slider(
     "Number of docs", min_value=1, max_value=20, value=5, step=1
 )
@@ -44,33 +44,37 @@ st.session_state["k_docs"] = st.sidebar.slider(
 # create Chat
 with doc_col:
     st.container()
-    if prompt := st.chat_input("Type your question here to talk to Gemini"):
-
-    st.session_state.chat_dialogue.append({"role": "user", "content": prompt})
-
-    with st.chat_message("user"):
-        st.markdown(prompt)
-    with st.chat_message("model"):
-        message_placeholder = st.empty()
-
-        full_response = ""
-        gemini_model = st.session_state["model"]
-        string_dialogue = ""
-        for dict_message in st.session_state.chat_dialogue:
-            if dict_message["role"] == "user":
-                string_dialogue = (
-                    string_dialogue + "User: " + dict_message["content"] + "\n\n"
-                )
-            else:
-                string_dialogue = (
-                    string_dialogue + "Assistant: " + dict_message["content"] + "\n\n"
-                )
-        else:
-            # append the latest history
-        # for item in output:
-        #     full_response += item.text
-        #     message_placeholder.markdown(full_response + "▌")
-        # message_placeholder.markdown(full_response)
+    # append the latest history
+    # for item in output:
+    #     full_response += item.text
+    #     message_placeholder.markdown(full_response + "▌")
+    # message_placeholder.markdown(full_response)
 
 with chat_col:
     st.container()
+    if prompt := st.chat_input("Type your question here to talk to Gemini"):
+
+        st.session_state.chat_dialogue.append({"role": "user", "content": prompt})
+
+        with st.chat_message("user"):
+            st.markdown(prompt)
+        with st.chat_message("model"):
+            message_placeholder = st.empty()
+
+            full_response = ""
+            gemini_model = st.session_state["model"]
+            string_dialogue = ""
+            for dict_message in st.session_state.chat_dialogue:
+                if dict_message["role"] == "user":
+                    string_dialogue = (
+                        string_dialogue + "User: " + dict_message["content"] + "\n\n"
+                    )
+                else:
+                    string_dialogue = (
+                        string_dialogue
+                        + "Assistant: "
+                        + dict_message["content"]
+                        + "\n\n"
+                    )
+            else:
+                pass
