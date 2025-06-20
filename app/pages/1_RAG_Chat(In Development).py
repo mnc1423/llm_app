@@ -44,16 +44,10 @@ st.session_state["k_docs"] = st.sidebar.slider(
 # create Chat
 with doc_col:
     st.container()
-    # append the latest history
-    # for item in output:
-    #     full_response += item.text
-    #     message_placeholder.markdown(full_response + "▌")
-    # message_placeholder.markdown(full_response)
 
 with chat_col:
     st.container()
     if prompt := st.chat_input("Type your question here to talk to Gemini"):
-
         st.session_state.chat_dialogue.append({"role": "user", "content": prompt})
 
         with st.chat_message("user"):
