@@ -35,20 +35,17 @@ container = st.container()
 response_container = st.container()
 
 
-# display chat messages from history on app rerun
+# display chat messages from history on app retrun
 for message in st.session_state.chat_dialogue:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
 if prompt := st.chat_input("Type your question here to talk to Gemini"):
-
     st.session_state.chat_dialogue.append({"role": "user", "content": prompt})
-
     with st.chat_message("user"):
         st.markdown(prompt)
     with st.chat_message("model"):
         message_placeholder = st.empty()
-
         full_response = ""
         gemini_model = st.session_state["model"]
         string_dialogue = ""
