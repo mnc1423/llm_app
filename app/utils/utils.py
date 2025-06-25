@@ -161,6 +161,32 @@ def init_session_state(defaults: dict):
             st.session_state[key] = value
 
 
+async def vector_search(vectordb, collection_name, embedding, k=5):
+    
+    if vectordb == "Elasticsearch":
+        endpoint = f"http://elastic_api:8000/insert/search"
+        payload = {
+            "collection": collection_name,
+            "embedding": embedding,
+            "k": k
+        }
+        async with _Request() as req:
+            results = await req.post(endpoint=endpoint, json=payload)
+            return results.get("documents", results)
+    elif vectordb == "ChromaDB":
+        endpoint = chroma_endpoint + "/search"
+        payload = {
+            "collection": collection_name,
+            "embedding": embedding,
+            "k": k
+        }
+        async with httpx.AsyncClient() as client:
+            response = await client.post(endpoint, json=payload)
+            return response.json().get("documents", response.json())
+    else:
+        raise ValueError(f"Unknown vectordb: {vectordb}")
+
+
 if __name__ == "__main__":
     resp = ollama_embedding(model_name="nomic-embed-text", text="testing model")
     print(resp.embedding)
