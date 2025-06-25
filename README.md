@@ -69,7 +69,7 @@ echo "FROM <created Model>" > Modelfile
 ollama create <ollama Model> -f Modelfile
 ```
 ## Using Gemini
-- Get API Key from Google AI Studio [link](aistudio.google.com)
+- Get API Key from Google AI Studio [link](https://aistudio.google.com)
 - Add Key to .env 
 
 
